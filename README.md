@@ -4,6 +4,8 @@ This code generates wiring diagrams for the energy flows in UK TIMES.
 
 i.e., it shows natural gas being connected to imports and to electricity generation and to heating
 
+See http://decc.github.io/times-wiring-diagram/ for example output
+
 
 Relies on: 
 
@@ -27,6 +29,12 @@ Then you run:
     ruby update-wiring-diagram.rb <GAMS-GDX-FILE.gdx> <description>
 
 Where description is anything you like. The version of the TIMES database being tested is a good thing to say.
+
+## Notes
+
+This diagram only includes commodities whose unit is PJ.
+
+This dagram combines processes and commodities whose name only differs by a number at the end.
 
 ## Hacking
 
