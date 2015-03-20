@@ -30,7 +30,7 @@ Where description is anything you like. The version of the TIMES database being 
 
 ## Hacking
 
-Authoritative copy at http://github.com/tamc/times-wiring-diagram
+Authoritative copy at http://github.com/decc/times-wiring-diagram
 
 Please report issues there.
 
