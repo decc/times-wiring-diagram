@@ -51,7 +51,8 @@ svg.shift until svg.first =~ /^<g/
 # Now we embed the svg in a template
 html = <<END
 <html>
-<head>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+<meta charset='utf-8'>
 <style>
   h1 {
     width: 100%;
@@ -63,7 +64,6 @@ html = <<END
 </style>
 <script src='d3.min.js'></script>
 <script src='svg-pan-zoom.min.js'></script>
-</head>
 <body>
 <h1>Energy wiring diagram for TIMES #{ARGV[1]}</h1>
 <svg id='nodeplot'>
