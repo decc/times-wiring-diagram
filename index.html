@@ -9,6 +9,18 @@
     margin: 0;
     padding: 0;
   }
+  g.node {
+    pointer-events: all;
+  }
+  .highlight ellipse {
+    fill: #ff0;
+    stroke: #f00;
+    stroke-width: 4px;
+  }
+  .highlight path {
+    stroke: #f00;
+    stroke-width: 4px;
+  }
 </style>
 <script src='d3.min.js'></script>
 <script src='svg-pan-zoom.min.js'></script>
@@ -11519,6 +11531,21 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
 d3.select('#nodeplot')
   .attr('width', width)
   .attr('height', height);
+
+d3.selectAll(".edge")
+  .attr("class", function(d) { return 'edge '+(this.id.replace('_', ' ')); });
+
+d3.selectAll(".node")
+  .attr("class", function(d) { return 'node '+(this.id); });
+
+d3.selectAll("g.node").on('click',function(d) {
+    if( d3.select(this).classed('highlight')) {
+      d3.selectAll("."+this.id).classed('highlight', false);
+    } else {
+      d3.selectAll("."+this.id).classed("highlight", true);
+    }
+    d3.event.preventDefault();
+    });
 
 var panZoomTiger = svgPanZoom('#nodeplot', {
   controlIconsEnabled: true,
