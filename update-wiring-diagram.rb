@@ -25,6 +25,8 @@ File.open('flows.gv', 'w') do |f|
   # http://www.graphviz.org/
   f.puts "digraph flows {" # We have a directed graph (or at least, in a sensible energy system we should"
   f.puts "graph [ratio=1]" # We want the result to look square-ish
+  f.puts 'node [id="\N"]' # We want the result to look square-ish
+  f.puts 'edge [id="\T_\H"]' # We want the result to look square-ish
 
   flows.map do |flow, value| # We write out each flow in the Graphviz format
     # We have to make sure that the node names don't include anything but letters and digits

@@ -1,5 +1,7 @@
 digraph flows {
 graph [ratio=1]
+node [id="\N"]
+edge [id="\T_\H"]
 AGRELC -> ADISTELC;
 AGRDISTELC -> AELC;
 ELC -> AGRELC;
