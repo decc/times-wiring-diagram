@@ -20,7 +20,7 @@ flows = gdx.load_flows(2010)
 
 # Then we open up a Graphviz input file:
 puts "Writing Graphviz input file"
-File.open('flows.gv', 'w') do |f|
+File.open('wiring.gv', 'w') do |f|
   # The Graphviz format is described here:
   # http://www.graphviz.org/
   f.puts "digraph flows {" # We have a directed graph (or at least, in a sensible energy system we should"
@@ -40,11 +40,11 @@ end
 # -T svg means write the result as svg
 # -o flows.svg gives the output filename
 puts "Processing graphviz file"
-puts `dot -o flows.svg -T svg flows.gv`
+puts `dot -o wiring.svg -T svg wiring.gv`
 
 # Now we open the svg file
 puts "Loading resulting svg"
-svg = IO.readlines('flows.svg')
+svg = IO.readlines('wiring.svg')
 
 # Now we drop all the gumph at the head of the file until
 # we hit the first bit of drawing
