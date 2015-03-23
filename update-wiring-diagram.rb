@@ -9,6 +9,8 @@ unless ARGV[0] && File.exist?(ARGV[0])
   exit
 end
 
+title = "Energy wiring diagram for TIMES #{ARGV[1]}"
+
 # First we load the gdx file
 puts "Opening #{ARGV[0]}"
 gdx = Gdx.new(ARGV[0])
@@ -18,17 +20,48 @@ gdx = Gdx.new(ARGV[0])
 puts "Extracting flows"
 flows = gdx.load_flows(2010)
 
+# Create the Node objects
+puts "Analysing nodes"
+class Node
+  attr_accessor :in, :out, :name
+  def initialize(name)
+    @name = name
+    @in, @out = [], []
+  end
+  def primary_source
+    @in.empty? && !@out.empty?
+  end
+  def final_demand
+    @out.empty? && !@in.empty?
+  end
+end
+
+nodes = Hash.new { |hash, key| hash[key] = Node.new(key) }
+
+# We do this so we can put all the sources of energy and final demands
+# on the same horizontal row in the final diagram
+puts "Finding primary sources of energy and final demands for energy"
+flows.each do |flow, value|
+  h = nodes[flow[0].gsub(/[^a-zA-Z0-9]+/,'')]
+  t = nodes[flow[1].gsub(/[^a-zA-Z0-9]+/,'')]
+  next if t == h
+  h.out.push(t)
+  t.in.push(h) 
+end
+
 # Then we open up a Graphviz input file:
 puts "Writing Graphviz input file"
 File.open('wiring.gv', 'w') do |f|
   # The Graphviz format is described here:
   # http://www.graphviz.org/
-  f.puts "digraph flows {" # We have a directed graph (or at least, in a sensible energy system we should"
-  f.puts "graph [ratio=1]" # We want the result to look square-ish
+  f.puts "digraph wiring {" # We have a directed graph (or at least, in a sensible energy system we should"
+  f.puts 'graph [rankdir="LR", ratio=0.7]' # We want the result to look square-ish
   f.puts 'node [id="\N"]' # We want the result to look square-ish
   f.puts 'edge [id="\T_\H"]' # We want the result to look square-ish
+  f.puts "{rank=source; #{nodes.values.select(&:primary_source).map(&:name).join(' ')} }"
+  f.puts "{rank=sink; #{nodes.values.select(&:final_demand).map(&:name).join(' ')} }"
 
-  flows.map do |flow, value| # We write out each flow in the Graphviz format
+  flows.each do |flow, value| # We write out each flow in the Graphviz format
     # We have to make sure that the node names don't include anything but letters and digits
     f.puts "#{flow[0].gsub(/[^a-zA-Z0-9]+/,'')} -> #{flow[1].gsub(/[^a-zA-Z0-9]+/,'')};"
   end
@@ -50,16 +83,18 @@ svg = IO.readlines('wiring.svg')
 # we hit the first bit of drawing
 svg.shift until svg.first =~ /^<g/
 
+
 # Now we embed the svg in a template
 html = <<END
 <html>
 <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 <meta charset='utf-8'>
+<title>#{title}</title>
 <style>
   h1 {
     width: 100%;
     text-align: center;
-    size: 15px;
+    size: 10px;
     margin: 0;
     padding: 0;
   }
@@ -79,7 +114,7 @@ html = <<END
 <script src='d3.min.js'></script>
 <script src='svg-pan-zoom.min.js'></script>
 <body>
-<h1>Energy wiring diagram for TIMES #{ARGV[1]}</h1>
+<h1>#{title}</h1>
 <svg id='nodeplot'>
 #{svg.join}
 <script>
